@@ -1,0 +1,43 @@
+.employee-list {
+  margin: 2rem auto;
+  max-width: 900px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+    thead {
+      background-color: #007bff;
+      color: #ffffff;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    th,
+    td {
+      padding: 1rem;
+      text-align: left;
+    }
+
+    tbody {
+      tr:nth-child(even) {
+        background-color: #f9f9f9;
+      }
+
+      tr:hover {
+        background-color: #e0f0ff;
+        cursor: pointer;
+      }
+    }
+  }
+
+  p {
+    text-align: center;
+    color: #777;
+    font-style: italic;
+  }
+}
