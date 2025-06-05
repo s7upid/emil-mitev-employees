@@ -1,22 +1,43 @@
-﻿using Api.Models;
+﻿using Application.DTOs.Request;
+using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class EmployeesController : ControllerBase
+public class EmployeesController(IEmployeeProjectService employeeProjectService) : ControllerBase
 {
-    [HttpPost("upload")]
-    public async Task<IActionResult> Upload([FromForm] FileUploadRequest request)
-    {
-        var file = request.File;
+    private readonly IEmployeeProjectService _employeeProjectService = employeeProjectService;
 
-        if (file == null || file.Length == 0)
+    [HttpPost("upload")]
+    public async Task<IActionResult> Upload([FromForm] FileUploadRequest request, CancellationToken cancellationToken)
+    {
+        if (request == null || request.File == null || request.File.Length == 0)
         {
-            return BadRequest("File not selected");
+            return BadRequest("No file provided");
         }
 
-        return Ok(file);
+        var result = await _employeeProjectService.ProcessEmployeeProjectFileAsync(request.File, cancellationToken);
+
+        if (result.IsFailed)
+        {
+            return BadRequest(result.ErrorMessage);
+        }
+
+        return Ok(result.Value);
+    }
+
+    [HttpGet("longest-pair")]
+    public async Task<IActionResult> GetLongestWorkedTogetherPair(CancellationToken cancellationToken)
+    {
+        var result = await _employeeProjectService.GetAllEmployeePairsSortedAsync(cancellationToken);
+
+        if (result.IsFailed)
+        {
+            return BadRequest(result.ErrorMessage);
+        }
+
+        return Ok(result.Value);
     }
 }
