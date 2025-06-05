@@ -1,0 +1,19 @@
+ARG MSSQL_DATABASE=EmployeesService
+ARG MSSQL_ROOT_PASSWORD=yourStrongPassw0rd_
+
+FROM mcr.microsoft.com/mssql/server:2022-latest
+
+ENV ACCEPT_EULA=Y
+ENV SA_PASSWORD=yourStrongPassw0rd_
+
+WORKDIR /work
+
+COPY ./init/. .
+
+USER root
+
+ARG MSSQL_ROOT_PASSWORD
+ARG MSSQL_DATABASE
+
+RUN /opt/mssql/bin/sqlservr --accept-eula & (echo "Waiting for sql server service" && sleep 15 && \
+    echo "Initialising database"  && /opt/mssql-tools18/bin/sqlcmd -U sa -P yourStrongPassw0rd_ -C -i init.sql)

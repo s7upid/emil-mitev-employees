@@ -1,0 +1,68 @@
+name: EmployeesService
+services:
+    sqlserver:
+        container_name: employeesService-sql
+        build:
+            context: ./
+            dockerfile: Dockerfile-sql
+        restart: always
+        ports:
+            - 7902:1433
+        volumes:
+            - mssql_data:/var/opt/mssql
+            - ./sql/mssql-backups:/var/opt/backup # just for backups
+        environment:
+            - ACCEPT_EULA=Y
+            - TZ=Europe/London
+        networks:
+            - service_net
+        healthcheck:
+            test: [ "CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -U sa -P $$SA_PASSWORD -C -Q 'SELECT 1'" ]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+
+    api:
+        container_name: api
+        build:
+            context: ../src
+            dockerfile: Api/Dockerfile
+        restart: always
+        ports:
+            - 4444:8080
+        networks:
+            - service_net
+        healthcheck:
+            test: ["CMD-SHELL", "curl --fail http://localhost:8080/health || exit 1"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        depends_on:
+            sqlserver:
+                condition: service_healthy
+        env_file: ".env"
+        environment:
+            ConnectionStrings__DefaultConnection: "Server=sqlserver;Database=EmployeesService;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;MultiSubnetFailover=True"
+        profiles: [fullApp]
+
+    ui:
+        container_name: UI
+        build:
+            context: ../src/frontend
+            dockerfile: Dockerfile
+            args:
+                REACT_APP_API_BASE_URL: "http://localhost:4444/api"
+        restart: always
+        ports:
+            - 3000:80
+        networks:
+            - service_net
+        depends_on:
+            - api
+        profiles: [fullApp]
+
+networks:
+    service_net:
+
+volumes:
+    mssql_data:
