@@ -21,6 +21,6 @@ docker-compose --profile fullApp up --build -d
 ```
 
 ## Accessing the application
- **Frontend UI**: Open your browser and navigate to http://localhost:3000
- **Backend API**: Accessible at http://localhost:4444
- **SQL Server**: Connect to the database on port 7902 (e.g., using SQL Server Management Studio or Azure Data Studio)
+- **Frontend UI**: Open your browser and navigate to http://localhost:3000
+- **Backend API**: Accessible at http://localhost:4444
+- **SQL Server**: Connect to the database on port 7902 (e.g., using SQL Server Management Studio or Azure Data Studio)
