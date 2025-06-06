@@ -1,5 +1,5 @@
 import React from "react";
-import { EmployeePair } from "../models/employee/EmployeePair";
+import { EmployeePair } from "../../models/employee/EmployeePair";
 
 import "./EmployeeList.scss";
 

@@ -1,6 +1,8 @@
 ﻿using Application.DTOs.Request;
+using Application.DTOs.Response;
 using Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Api.Controllers;
 
@@ -10,7 +12,11 @@ public class EmployeesController(IEmployeeProjectService employeeProjectService)
 {
     private readonly IEmployeeProjectService _employeeProjectService = employeeProjectService;
 
-    [HttpPost("upload")]
+    [HttpPost]
+    [Route("upload")]
+    [SwaggerOperation(Summary = "Add relations between employees and projects.")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Upload([FromForm] FileUploadRequest request, CancellationToken cancellationToken)
     {
         if (request == null || request.File == null || request.File.Length == 0)
@@ -28,8 +34,12 @@ public class EmployeesController(IEmployeeProjectService employeeProjectService)
         return Ok(result.Value);
     }
 
-    [HttpGet("longest-pair")]
-    public async Task<IActionResult> GetLongestWorkedTogetherPair(CancellationToken cancellationToken)
+    [HttpGet]
+    [Route("top-pair")]
+    [SwaggerOperation(Summary = "Returns top pairs of employees.")]
+    [ProducesResponseType(typeof(IList<EmployeePairDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(string), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetTopWorkedTogetherPair(CancellationToken cancellationToken)
     {
         var result = await _employeeProjectService.GetAllEmployeePairsSortedAsync(cancellationToken);
 

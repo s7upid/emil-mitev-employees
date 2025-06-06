@@ -1,7 +1,7 @@
 import React from "react";
 import { useTopPairs } from "../hooks/useTopPairs";
-import EmployeeList from "../components/EmployeeList";
-import FileUploader from "../components/FileUploader";
+import EmployeeList from "../components/EmployeeList/EmployeeList";
+import FileUploader from "../components/FileUploader/FileUploader";
 import { handleApiError } from "../utils/handleApiError";
 
 import "./EmployeeDashboard.scss";

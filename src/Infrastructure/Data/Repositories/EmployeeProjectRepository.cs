@@ -32,7 +32,7 @@ public class EmployeeProjectRepository(IAppDbContext context) : IEmployeeProject
         await _context.EmployeeProjects.AddRangeAsync(records, cancellationToken);
     }
 
-    public async Task<List<EmployeeProject>> GetAllAsync(CancellationToken cancellationToken)
+    public async Task<IList<EmployeeProject>> GetAllAsync(CancellationToken cancellationToken)
     {
         return await _context.EmployeeProjects
             .Include(ep => ep.Employee)
